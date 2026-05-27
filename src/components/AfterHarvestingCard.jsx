@@ -1,7 +1,7 @@
 import { useApp } from '../context/AppContext'
 import { fmtTotal } from '../utils/formatters'
 import { getNetGains } from '../utils/calculations'
-import { GainsTable } from './PreHarvestingCard'
+import { GainsTable } from './GainsTable'
 import Spinner from './Spinner'
 
 export default function AfterHarvestingCard() {
@@ -23,6 +23,8 @@ export default function AfterHarvestingCard() {
     )
   }
 
+  if (!capitalGains || !afterGains) return null
+
   const preNet = getNetGains(capitalGains)
   const afterNet = getNetGains(afterGains)
   const saved = preNet.total - afterNet.total
@@ -35,10 +37,7 @@ export default function AfterHarvestingCard() {
       <GainsTable gains={afterGains} dark />
 
       <div className="mt-5 pt-4 border-t border-white/20 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-sm font-semibold text-white">
-          Effective Capital Gains:
-        </span>
-
+        <span className="text-sm font-semibold text-white">Effective Capital Gains:</span>
         <span className="text-xl sm:text-2xl font-bold text-white text-right">
           {fmtTotal(afterNet.total)}
         </span>
@@ -48,7 +47,7 @@ export default function AfterHarvestingCard() {
         <div className="mt-3 flex items-center gap-2">
           <span className="text-base leading-none">🎉</span>
           <p className="text-sm text-white">
-            You&apos;re going to save up to{' '}
+            You are going to save upto{' '}
             <span className="font-semibold">{fmtTotal(saved)}</span>
           </p>
         </div>

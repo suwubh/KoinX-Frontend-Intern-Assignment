@@ -24,8 +24,7 @@ export default function HoldingsTable() {
 
   const allSelected =
     sortedHoldings.length > 0 && sortedHoldings.every((h) => selectedIds.has(h.id))
-  const someSelected =
-    !allSelected && sortedHoldings.some((h) => selectedIds.has(h.id))
+  const someSelected = !allSelected && sortedHoldings.some((h) => selectedIds.has(h.id))
 
   const headerCheckboxRef = useRef(null)
   useEffect(() => {
@@ -60,7 +59,7 @@ export default function HoldingsTable() {
       ) : (
         <>
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[680px]">
+            <table className="w-full min-w-[800px]">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-gray-700/60">
                   <th className="pl-4 pr-2 py-3 w-10">
@@ -72,36 +71,42 @@ export default function HoldingsTable() {
                       onChange={() => toggleAll(sortedHoldings)}
                     />
                   </th>
+
                   <th className="py-3 pr-4 text-left">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Asset
                     </span>
                   </th>
+
                   <th className="py-3 pr-4 text-right">
                     <div className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Holdings
                     </div>
                     <div className="text-[10px] font-normal text-gray-400 dark:text-gray-500 normal-case tracking-normal">
-                      Avg Buy Price
+                      Current Market Rate
                     </div>
                   </th>
+
                   <th className="py-3 pr-4 text-right">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
-                      Current Price
+                      Total Current Value
                     </span>
                   </th>
+
                   <SortableHeader
                     active={sortKey === 'stcg'}
                     direction={sortDir}
                     label="Short-term"
                     onClick={() => handleSort('stcg')}
                   />
+
                   <SortableHeader
                     active={sortKey === 'ltcg'}
                     direction={sortDir}
                     label="Long-term"
                     onClick={() => handleSort('ltcg')}
                   />
+
                   <th className="py-3 pr-4 text-right">
                     <span className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
                       Amount to Sell

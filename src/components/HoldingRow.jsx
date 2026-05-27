@@ -14,7 +14,8 @@ import Tooltip from './Tooltip'
 export default function HoldingRow({ holding }) {
   const { selectedIds, toggleHolding } = useApp()
   const isSelected = selectedIds.has(holding.id)
-  const totalHoldings = holding.totalHoldings ?? holding.totalHolding
+  const { totalHolding } = holding
+  const totalCurrentValue = totalHolding * holding.currentPrice
 
   return (
     <tr
@@ -31,7 +32,7 @@ export default function HoldingRow({ holding }) {
           className="harvest-checkbox"
           checked={isSelected}
           onChange={() => toggleHolding(holding.id)}
-          onClick={(event) => event.stopPropagation()}
+          onClick={(e) => e.stopPropagation()}
         />
       </td>
 
@@ -42,9 +43,9 @@ export default function HoldingRow({ holding }) {
               src={holding.logo}
               alt={holding.coinName}
               className="h-8 w-8 rounded-full object-cover"
-              onError={(event) => {
-                event.currentTarget.classList.add('hidden')
-                event.currentTarget.nextElementSibling?.classList.remove('hidden')
+              onError={(e) => {
+                e.currentTarget.classList.add('hidden')
+                e.currentTarget.nextElementSibling?.classList.remove('hidden')
               }}
             />
             <div className="hidden h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700 dark:bg-blue-900/50 dark:text-blue-200">
@@ -62,21 +63,21 @@ export default function HoldingRow({ holding }) {
 
       <td className="py-4 pr-4 text-right">
         <div className="text-sm text-gray-800 dark:text-gray-200">
-          <Tooltip content={fmtFullTokenAmount(totalHoldings, holding.coin)} align="right">
-            <span>{fmtHoldings(totalHoldings, holding.coin)}</span>
+          <Tooltip content={fmtFullTokenAmount(totalHolding, holding.coin)} align="right">
+            <span>{fmtHoldings(totalHolding, holding.coin)}</span>
           </Tooltip>
         </div>
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-          <Tooltip content={fmtFullCurrency(holding.averageBuyPrice)} align="right">
-            <span>Avg {fmtCompactCurrency(holding.averageBuyPrice)}</span>
+          <Tooltip content={fmtFullPrice(holding.currentPrice, holding.coin)} align="right">
+            <span>{fmtPrice(holding.currentPrice, holding.coin)}</span>
           </Tooltip>
         </div>
       </td>
 
       <td className="py-4 pr-4 text-right">
-        <Tooltip content={fmtFullPrice(holding.currentPrice, holding.coin)} align="right">
+        <Tooltip content={fmtFullCurrency(totalCurrentValue)} align="right">
           <span className="text-sm text-gray-800 dark:text-gray-200">
-            {fmtPrice(holding.currentPrice, holding.coin)}
+            {fmtCompactCurrency(totalCurrentValue)}
           </span>
         </Tooltip>
       </td>
@@ -101,9 +102,9 @@ export default function HoldingRow({ holding }) {
 
       <td className="py-4 pr-4 text-right">
         {isSelected ? (
-          <Tooltip content={fmtFullTokenAmount(totalHoldings, holding.coin)} align="right">
+          <Tooltip content={fmtFullTokenAmount(totalHolding, holding.coin)} align="right">
             <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-              {fmtHoldings(totalHoldings, holding.coin)}
+              {fmtHoldings(totalHolding, holding.coin)}
             </span>
           </Tooltip>
         ) : (

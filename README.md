@@ -1,6 +1,17 @@
 # KoinX Tax Loss Harvesting
 
-React implementation of the KoinX frontend intern assignment. The app loads mock capital gains and holdings data, lets the user choose assets to harvest, and updates the after-harvesting card immediately.
+React implementation of the KoinX frontend intern assignment. The app loads mock capital gains and holdings data, lets the user select assets to harvest, and updates the after-harvesting card in real time.
+
+## Live Demo
+
+https://koin-x-frontend-intern-assignment-alpha.vercel.app/
+
+## Tech Stack
+
+- React 18 + Vite
+- Tailwind CSS v3
+- React Context API for global state management
+- Mock APIs via Promises (no external server required)
 
 ## Setup
 
@@ -11,7 +22,7 @@ npm run dev
 
 The dev server runs at `http://localhost:5173`.
 
-Useful scripts:
+Other useful scripts:
 
 ```bash
 npm run build
@@ -22,45 +33,48 @@ npm run preview
 
 - Pre-harvesting and after-harvesting capital gains cards
 - Mock API calls with loading and error states
-- Holdings table with row selection and select all
-- Amount to sell shown only for selected holdings
-- Short-term and long-term gain sorting
-- View all / view less for the holdings list
-- Light/dark theme toggle
-- Responsive layout with horizontal table scroll on small screens
+- Holdings table with per-row checkbox and select-all
+- Total Current Value column derived from holdings × current price
+- Short-term and long-term gain columns, sortable
+- Amount to Sell populated only for selected rows
+- View all / View less for the holdings list
+- Light/dark theme toggle with no flash on refresh
+- Responsive layout — cards stack on mobile, table scrolls horizontally
 
-## Project structure
+## Project Structure
 
-```text
+```
 src/
-  api/          mock API responses
+  api/          mock API responses (capitalGains.js, holdings.js)
   components/   UI components
-  context/      shared app state
-  utils/        calculations and formatting helpers
+  context/      AppContext — shared state and side effects
+  utils/        calculations.js, formatters.js
 ```
 
-## Harvesting logic
+## Harvesting Logic
 
-The base capital gains come from `src/api/capitalGains.js`. When a holding is selected, its short-term and long-term gains are applied to the after-harvesting totals:
+Base capital gains come from `src/api/capitalGains.js`. When a holding row is selected, its STCG and LTCG gains are applied on top of the base figures:
 
-- positive gain increases profits
-- negative gain increases losses
+- Positive gain → added to profits
+- Negative gain → absolute value added to losses
 
-Net capital gains are calculated as `profits - losses`. The savings message is shown only when the after-harvesting realised gain is lower than the pre-harvesting realised gain.
+Net Capital Gains = `profits − losses` for each term. Realised/Effective Capital Gains = STCG net + LTCG net.
+
+The savings banner appears only when the after-harvesting effective capital gains are strictly lower than the pre-harvesting realised capital gains.
 
 ## Assumptions
 
-- Currency is shown as INR because the assignment data uses INR-style prices and the savings requirement uses `INR X`.
-- The savings value is the reduction in realised gains, not tax-adjusted savings, because the assignment does not provide tax rates.
-- The mock holdings response contains duplicate symbols such as `USDC`, so the app adds a generated `id` for selection state.
-- The spec's holdings contain only negligible negative gains (< ₹0.01 total), which means selecting any combination never produces a visible savings figure. Three additional holdings with realistic losses are included so the "You are going to save" banner can be demonstrated.
+- Currency is shown as ₹ (INR) because the assignment data uses INR-style prices and the spec savings requirement references `₹X`.
+- The savings value shown is the reduction in realised gains, not a tax-adjusted figure, because the assignment does not specify a tax rate.
+- The mock holdings data contains duplicate coin symbols (e.g. two `USDC` entries). Each row is assigned a unique `id` using `${coin}-${index}` so selection state is independent.
+- The original spec holdings have only negligible negative gains (< ₹0.01 total). Three additional holdings - BTC, NEAR, DOT - with realistic losses have been added so the savings banner can be demonstrated during review. They are called out in the holdings API file.
 
 ## Screenshots
 
-Desktop view:
+Desktop (light mode):
 
 ![Desktop screenshot](screenshots/desktop_screenshot.jpeg)
 
-Mobile view:
+Mobile:
 
 ![Mobile screenshot](screenshots/mobile_screenshot.jpeg)

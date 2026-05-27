@@ -290,7 +290,6 @@ function prepareHolding(holding, index) {
   return {
     ...holding,
     id: `${holding.coin}-${index}`,
-    totalHoldings: holding.totalHolding,
   }
 }
 
