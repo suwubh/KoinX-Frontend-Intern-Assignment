@@ -71,7 +71,7 @@ The savings banner appears only when the after-harvesting effective capital gain
 
 ## Screenshots
 
-Desktop (light mode):
+Desktop (dark mode):
 
 ![Desktop screenshot](screenshots/desktop_screenshot.jpeg)
 
