@@ -7,10 +7,10 @@ import HowItWorksPopover from './components/HowItWorksPopover'
 
 export default function App() {
   return (
-    <div className="min-h-screen w-screen overflow-x-hidden bg-[#f0f4ff] dark:bg-[#0d1421] transition-colors">
+    <div className="min-h-screen w-full bg-[#f0f4ff] dark:bg-[#0d1421] transition-colors">
       <Header />
 
-      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 overflow-x-hidden">
+      <main className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-center gap-3 mb-6">
           <h1 className="text-xl font-bold text-gray-900 dark:text-white">Tax Harvesting</h1>
           <HowItWorksPopover />

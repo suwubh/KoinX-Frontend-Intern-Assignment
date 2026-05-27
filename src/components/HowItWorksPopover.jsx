@@ -27,16 +27,25 @@ export default function HowItWorksPopover() {
     <div className="relative" ref={popoverRef}>
       <button
         type="button"
-        onClick={() => setOpen((value) => !value)}
-        className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400"
+        onClick={() => setOpen((v) => !v)}
+        className="text-sm font-medium text-blue-600 hover:underline dark:text-blue-400 whitespace-nowrap"
         aria-expanded={open}
       >
         How it works?
       </button>
 
       {open && (
-        <div className="absolute left-0 top-7 z-30 w-72 rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-600 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300">
-          <div className="absolute -top-2 left-4 h-4 w-4 rotate-45 border-l border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800" />
+        <div
+          className={[
+            'absolute top-7 z-30',
+            'left-0',
+            'w-72 max-w-[calc(100vw-2rem)]',
+            'rounded-xl border border-gray-200 bg-white p-4 text-sm text-gray-600',
+            'shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300',
+          ].join(' ')}
+          style={{ right: 'auto' }}
+        >
+          <div className="absolute -top-2 left-4 h-4 w-4 rotate-45 border-l border-t border-gray-200 bg-white dark:border-gray-700 dark:bg-gray-800 hidden sm:block" />
 
           <ul className="relative list-disc space-y-2 pl-4">
             <li>See your capital gains for FY 2024-25 in the left card.</li>

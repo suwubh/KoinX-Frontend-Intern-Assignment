@@ -53,7 +53,14 @@ Net capital gains are calculated as `profits - losses`. The savings message is s
 - Currency is shown as INR because the assignment data uses INR-style prices and the savings requirement uses `INR X`.
 - The savings value is the reduction in realised gains, not tax-adjusted savings, because the assignment does not provide tax rates.
 - The mock holdings response contains duplicate symbols such as `USDC`, so the app adds a generated `id` for selection state.
+- The spec's holdings contain only negligible negative gains (< ₹0.01 total), which means selecting any combination never produces a visible savings figure. Three additional holdings with realistic losses are included so the "You are going to save" banner can be demonstrated.
 
 ## Screenshots
 
-Add desktop and mobile screenshots before submitting.
+Desktop view:
+
+![Desktop screenshot](screenshots/desktop_screenshot.jpeg)
+
+Mobile view:
+
+![Mobile screenshot](screenshots/mobile_screenshot.jpeg)

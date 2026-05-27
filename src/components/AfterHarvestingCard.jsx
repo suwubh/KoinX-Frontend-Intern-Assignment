@@ -35,17 +35,21 @@ export default function AfterHarvestingCard() {
       <GainsTable gains={afterGains} dark />
 
       <div className="mt-5 pt-4 border-t border-white/20 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
-        <span className="text-sm font-semibold text-white">Effective Capital Gains:</span>
-        <span className="text-xl sm:text-2xl font-bold text-white text-right">{fmtTotal(afterNet.total)}</span>
+        <span className="text-sm font-semibold text-white">
+          Effective Capital Gains:
+        </span>
+
+        <span className="text-xl sm:text-2xl font-bold text-white text-right">
+          {fmtTotal(afterNet.total)}
+        </span>
       </div>
 
       {showSavings && (
         <div className="mt-3 flex items-center gap-2">
-          <span className="flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs font-bold text-white">
-            &#8377;
-          </span>
+          <span className="text-base leading-none">🎉</span>
           <p className="text-sm text-white">
-            You're going to save up to <span className="font-semibold">{fmtTotal(saved)}</span>
+            You&apos;re going to save up to{' '}
+            <span className="font-semibold">{fmtTotal(saved)}</span>
           </p>
         </div>
       )}

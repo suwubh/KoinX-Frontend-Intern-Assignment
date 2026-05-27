@@ -8,15 +8,13 @@ const DEFAULT_VISIBLE = 4
 export default function HoldingsTable() {
   const { holdings, selectedIds, toggleAll, loading, error } = useApp()
   const [showAll, setShowAll] = useState(false)
-  const [sortKey, setSortKey] = useState('impact')
+  const [sortKey, setSortKey] = useState(null)
   const [sortDir, setSortDir] = useState('desc')
 
   const sortedHoldings = useMemo(() => {
+    if (!sortKey) return holdings
     return [...holdings].sort((a, b) => {
-      const aValue = getSortValue(a, sortKey)
-      const bValue = getSortValue(b, sortKey)
-      const diff = aValue - bValue
-
+      const diff = getSortValue(a, sortKey) - getSortValue(b, sortKey)
       return sortDir === 'desc' ? -diff : diff
     })
   }, [holdings, sortDir, sortKey])
@@ -38,16 +36,15 @@ export default function HoldingsTable() {
 
   function handleSort(key) {
     if (sortKey === key) {
-      setSortDir((direction) => (direction === 'desc' ? 'asc' : 'desc'))
-      return
+      setSortDir((d) => (d === 'desc' ? 'asc' : 'desc'))
+    } else {
+      setSortKey(key)
+      setSortDir('desc')
     }
-
-    setSortKey(key)
-    setSortDir('desc')
   }
 
   return (
-    <div className="w-full min-w-0 bg-white dark:bg-[#1a2438] rounded-2xl shadow-sm overflow-hidden">
+    <div className="w-full bg-white dark:bg-[#1a2438] rounded-2xl shadow-sm overflow-hidden">
       <div className="px-6 py-5 border-b border-gray-100 dark:border-gray-700/60">
         <h2 className="text-base font-bold text-gray-900 dark:text-white">Holdings</h2>
       </div>
@@ -62,8 +59,8 @@ export default function HoldingsTable() {
         </div>
       ) : (
         <>
-          <div className="w-full max-w-full overflow-x-auto">
-            <table className="w-full min-w-[720px]">
+          <div className="overflow-x-auto">
+            <table className="w-full min-w-[680px]">
               <thead>
                 <tr className="border-b border-gray-100 dark:border-gray-700/60">
                   <th className="pl-4 pr-2 py-3 w-10">
@@ -124,7 +121,7 @@ export default function HoldingsTable() {
             <div className="px-4 py-3 border-t border-gray-100 dark:border-gray-700/60">
               <button
                 type="button"
-                onClick={() => setShowAll((value) => !value)}
+                onClick={() => setShowAll((v) => !v)}
                 className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 transition-colors"
               >
                 {showAll ? 'View less' : 'View all'}
@@ -137,11 +134,10 @@ export default function HoldingsTable() {
   )
 }
 
-function getSortValue(holding, sortKey) {
-  if (sortKey === 'stcg') return holding.stcg.gain
-  if (sortKey === 'ltcg') return holding.ltcg.gain
-
-  return Math.abs(holding.stcg.gain) + Math.abs(holding.ltcg.gain)
+function getSortValue(holding, key) {
+  if (key === 'stcg') return holding.stcg.gain
+  if (key === 'ltcg') return holding.ltcg.gain
+  return 0
 }
 
 function SortableHeader({ active, direction, label, onClick }) {
@@ -150,28 +146,46 @@ function SortableHeader({ active, direction, label, onClick }) {
       <button
         type="button"
         onClick={onClick}
-        className="ml-auto flex items-center justify-end gap-1 text-xs font-semibold text-gray-500 uppercase tracking-wide transition-colors hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400"
+        className="ml-auto flex items-center justify-end gap-1 text-xs font-semibold uppercase tracking-wide transition-colors hover:text-blue-600 dark:hover:text-blue-400 text-gray-500 dark:text-gray-400"
         aria-label={`Sort by ${label}`}
       >
-        {label}
         <SortIcon active={active} direction={direction} />
+        {label}
       </button>
     </th>
   )
 }
 
 function SortIcon({ active, direction }) {
+  if (!active) {
+    return (
+      <svg
+        width="12"
+        height="12"
+        viewBox="0 0 24 24"
+        fill="none"
+        className="text-gray-300 dark:text-gray-600 flex-shrink-0"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 4l4-4 4 4" />
+        <path strokeLinecap="round" strokeLinejoin="round" d="M8 20l4 4 4-4" />
+        <line x1="12" y1="0" x2="12" y2="24" />
+      </svg>
+    )
+  }
+
   return (
     <svg
       width="12"
       height="12"
       viewBox="0 0 24 24"
       fill="none"
-      className={active ? 'text-blue-500' : 'text-gray-400'}
+      className="text-blue-500 flex-shrink-0"
       stroke="currentColor"
       strokeWidth={2}
     >
-      {active && direction === 'asc' ? (
+      {direction === 'asc' ? (
         <path strokeLinecap="round" strokeLinejoin="round" d="M5 15l7-7 7 7" />
       ) : (
         <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
