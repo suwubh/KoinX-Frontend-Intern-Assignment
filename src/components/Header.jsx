@@ -9,8 +9,8 @@ export default function Header() {
         <KoinXLogo />
 
         <div className="flex items-center gap-3">
-          {/* Theme toggle */}
           <button
+            type="button"
             onClick={toggleTheme}
             className="w-8 h-8 rounded-full flex items-center justify-center text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
             aria-label="Toggle theme"
@@ -33,13 +33,6 @@ export default function Header() {
               </svg>
             )}
           </button>
-
-          {/* Mobile hamburger */}
-          <button className="md:hidden w-8 h-8 flex flex-col items-center justify-center gap-1.5">
-            <span className="w-5 h-0.5 bg-gray-600 dark:bg-gray-300" />
-            <span className="w-5 h-0.5 bg-gray-600 dark:bg-gray-300" />
-            <span className="w-5 h-0.5 bg-gray-600 dark:bg-gray-300" />
-          </button>
         </div>
       </div>
     </header>
@@ -51,9 +44,8 @@ function KoinXLogo() {
     <div className="flex items-center">
       <span className="text-[#1341F0] font-bold text-xl tracking-tight">Koin</span>
       <span className="relative">
-        {/* The X with overlapping style */}
         <span className="text-[#F7931A] font-bold text-xl">X</span>
-        <sup className="text-[#F7931A] text-[9px] font-semibold -top-2 relative">®</sup>
+        <sup className="text-[#F7931A] text-[9px] font-semibold -top-2 relative">&reg;</sup>
       </span>
     </div>
   )

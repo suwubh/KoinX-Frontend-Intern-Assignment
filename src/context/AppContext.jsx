@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, useRef } from 'react'
+import { createContext, useContext, useState, useEffect } from 'react'
 import { fetchCapitalGains } from '../api/capitalGains'
 import { fetchHoldings } from '../api/holdings'
 import { computeAfterGains } from '../utils/calculations'
@@ -17,7 +17,6 @@ export function AppProvider({ children }) {
   const [loading, setLoading] = useState({ gains: true, holdings: true })
   const [error, setError] = useState({ gains: null, holdings: null })
 
-  // apply dark class to <html>
   useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark')
     localStorage.setItem('koinx-theme', theme)
@@ -45,19 +44,18 @@ export function AppProvider({ children }) {
     })
   }
 
-  function toggleAll(visibleHoldings) {
-    const allSelected = visibleHoldings.every((h) => selectedIds.has(h.id))
+  function toggleAll(rows) {
+    const allSelected = rows.every((h) => selectedIds.has(h.id))
     if (allSelected) {
-      // deselect only the visible ones
       setSelectedIds((prev) => {
         const next = new Set(prev)
-        visibleHoldings.forEach((h) => next.delete(h.id))
+        rows.forEach((h) => next.delete(h.id))
         return next
       })
     } else {
       setSelectedIds((prev) => {
         const next = new Set(prev)
-        visibleHoldings.forEach((h) => next.add(h.id))
+        rows.forEach((h) => next.add(h.id))
         return next
       })
     }

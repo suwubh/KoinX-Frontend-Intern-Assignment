@@ -1,4 +1,3 @@
-// Returns net gains for a given stcg/ltcg object
 export function getNetGains(gains) {
   const stcgNet = gains.stcg.profits - gains.stcg.losses
   const ltcgNet = gains.ltcg.profits - gains.ltcg.losses
@@ -9,10 +8,7 @@ export function getNetGains(gains) {
   }
 }
 
-// Applies selected holdings' gains on top of the base capital gains data.
-// For each selected holding:
-//   positive stcg/ltcg gain → added to profits
-//   negative stcg/ltcg gain → absolute value added to losses
+// Selected holdings are applied on top of the original gains API result.
 export function computeAfterGains(base, holdings, selectedIds) {
   if (!base) return null
 

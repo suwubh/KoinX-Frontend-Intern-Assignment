@@ -1,8 +1,7 @@
-// Simulates a network call. The shape here matches what a real API would return.
 const data = {
   capitalGains: {
-    stcg: { profits: 1540, losses: 753 },
-    ltcg: { profits: 1200, losses: 650 },
+    stcg: { profits: 70200.88, losses: 1548.53 },
+    ltcg: { profits: 5020, losses: 3050 },
   },
 }
 

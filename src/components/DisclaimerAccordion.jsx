@@ -20,12 +20,14 @@ export default function DisclaimerAccordion() {
         aria-expanded={open}
       >
         <div className="flex items-center gap-2.5">
-          {/* Info icon with tooltip */}
           <div
             className="relative"
             onMouseEnter={() => setShowTooltip(true)}
             onMouseLeave={() => setShowTooltip(false)}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => {
+              e.stopPropagation()
+              setShowTooltip((value) => !value)
+            }}
           >
             <div className="w-5 h-5 rounded-full border-2 border-blue-500 flex items-center justify-center flex-shrink-0">
               <span className="text-blue-500 text-xs font-bold leading-none">i</span>
@@ -34,9 +36,9 @@ export default function DisclaimerAccordion() {
             {showTooltip && (
               <div className="absolute left-7 top-1/2 -translate-y-1/2 z-20 w-64 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg p-3 text-sm text-gray-600 dark:text-gray-300">
                 Tax loss harvesting lets you sell assets at a loss to offset capital gains and reduce your tax bill.{' '}
-                <a href="#" className="text-blue-500 hover:underline">
+                <span className="text-blue-500">
                   Know More
-                </a>
+                </span>
               </div>
             )}
           </div>

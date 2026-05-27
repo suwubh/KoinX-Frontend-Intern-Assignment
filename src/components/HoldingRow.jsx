@@ -1,11 +1,20 @@
 import { useApp } from '../context/AppContext'
-import { fmtGain, fmtBalance, fmtHoldings, fmtPrice, fmtMarketValue } from '../utils/formatters'
+import {
+  fmtBalance,
+  fmtCompactCurrency,
+  fmtFullCurrency,
+  fmtFullPrice,
+  fmtFullTokenAmount,
+  fmtGain,
+  fmtHoldings,
+  fmtPrice,
+} from '../utils/formatters'
+import Tooltip from './Tooltip'
 
 export default function HoldingRow({ holding }) {
   const { selectedIds, toggleHolding } = useApp()
   const isSelected = selectedIds.has(holding.id)
-
-  const totalValue = holding.totalHoldings * holding.currentPrice
+  const totalHoldings = holding.totalHoldings ?? holding.totalHolding
 
   return (
     <tr
@@ -16,28 +25,32 @@ export default function HoldingRow({ holding }) {
       }`}
       onClick={() => toggleHolding(holding.id)}
     >
-      {/* Checkbox */}
       <td className="pl-4 pr-2 py-4 w-10">
         <input
           type="checkbox"
           className="harvest-checkbox"
           checked={isSelected}
           onChange={() => toggleHolding(holding.id)}
-          onClick={(e) => e.stopPropagation()}
+          onClick={(event) => event.stopPropagation()}
         />
       </td>
 
-      {/* Asset */}
       <td className="py-4 pr-4">
         <div className="flex items-center gap-3">
-          <img
-            src={holding.logo}
-            alt={holding.coinName}
-            className="w-8 h-8 rounded-full"
-            onError={(e) => {
-              e.target.style.display = 'none'
-            }}
-          />
+          <div className="h-8 w-8 flex-shrink-0">
+            <img
+              src={holding.logo}
+              alt={holding.coinName}
+              className="h-8 w-8 rounded-full object-cover"
+              onError={(event) => {
+                event.currentTarget.classList.add('hidden')
+                event.currentTarget.nextElementSibling?.classList.remove('hidden')
+              }}
+            />
+            <div className="hidden h-8 w-8 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700 dark:bg-blue-900/50 dark:text-blue-200">
+              {holding.coin.replace('$', '').charAt(0)}
+            </div>
+          </div>
           <div>
             <div className="text-sm font-semibold text-gray-900 dark:text-white">
               {holding.coinName}
@@ -47,65 +60,69 @@ export default function HoldingRow({ holding }) {
         </div>
       </td>
 
-      {/* Holdings / Current Market Rate */}
       <td className="py-4 pr-4 text-right">
         <div className="text-sm text-gray-800 dark:text-gray-200">
-          {fmtHoldings(holding.totalHoldings, holding.coin)}
+          <Tooltip content={fmtFullTokenAmount(totalHoldings, holding.coin)} align="right">
+            <span>{fmtHoldings(totalHoldings, holding.coin)}</span>
+          </Tooltip>
         </div>
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-          {fmtPrice(holding.currentPrice, holding.coin)}
+          <Tooltip content={fmtFullCurrency(holding.averageBuyPrice)} align="right">
+            <span>Avg {fmtCompactCurrency(holding.averageBuyPrice)}</span>
+          </Tooltip>
         </div>
       </td>
 
-      {/* Total Current Value */}
       <td className="py-4 pr-4 text-right">
-        <span className="text-sm text-gray-800 dark:text-gray-200">
-          {fmtMarketValue(totalValue)}
-        </span>
+        <Tooltip content={fmtFullPrice(holding.currentPrice, holding.coin)} align="right">
+          <span className="text-sm text-gray-800 dark:text-gray-200">
+            {fmtPrice(holding.currentPrice, holding.coin)}
+          </span>
+        </Tooltip>
       </td>
 
-      {/* Short-term gain */}
       <td className="py-4 pr-4 text-right">
-        <div
-          className={`text-sm font-medium ${
-            holding.stcg.gain >= 0
-              ? 'text-green-600 dark:text-green-400'
-              : 'text-red-500 dark:text-red-400'
-          }`}
-        >
-          {fmtGain(holding.stcg.gain)}
-        </div>
+        <GainValue value={holding.stcg.gain} />
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-          {fmtBalance(holding.stcg.balance, holding.coin)}
+          <Tooltip content={fmtFullTokenAmount(holding.stcg.balance, holding.coin)} align="right">
+            <span>{fmtBalance(holding.stcg.balance, holding.coin)}</span>
+          </Tooltip>
         </div>
       </td>
 
-      {/* Long-term gain */}
       <td className="py-4 pr-4 text-right">
-        <div
-          className={`text-sm font-medium ${
-            holding.ltcg.gain >= 0
-              ? 'text-green-600 dark:text-green-400'
-              : 'text-red-500 dark:text-red-400'
-          }`}
-        >
-          {fmtGain(holding.ltcg.gain)}
-        </div>
+        <GainValue value={holding.ltcg.gain} />
         <div className="text-xs text-gray-400 dark:text-gray-500 mt-0.5">
-          {fmtBalance(holding.ltcg.balance, holding.coin)}
+          <Tooltip content={fmtFullTokenAmount(holding.ltcg.balance, holding.coin)} align="right">
+            <span>{fmtBalance(holding.ltcg.balance, holding.coin)}</span>
+          </Tooltip>
         </div>
       </td>
 
-      {/* Amount to Sell */}
       <td className="py-4 pr-4 text-right">
         {isSelected ? (
-          <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
-            {fmtHoldings(holding.totalHoldings, holding.coin)}
-          </span>
+          <Tooltip content={fmtFullTokenAmount(totalHoldings, holding.coin)} align="right">
+            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
+              {fmtHoldings(totalHoldings, holding.coin)}
+            </span>
+          </Tooltip>
         ) : (
           <span className="text-sm text-gray-400 dark:text-gray-600">-</span>
         )}
       </td>
     </tr>
+  )
+}
+
+function GainValue({ value }) {
+  const colorClass =
+    value >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-500 dark:text-red-400'
+
+  return (
+    <div className={`text-sm font-medium ${colorClass}`}>
+      <Tooltip content={fmtFullCurrency(value, { showPositive: true })} align="right">
+        <span>{fmtGain(value)}</span>
+      </Tooltip>
+    </div>
   )
 }

@@ -10,7 +10,6 @@
 }
 
 @layer components {
-  /* Custom checkbox that matches the design */
   .harvest-checkbox {
     @apply w-4 h-4 rounded border-2 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 cursor-pointer appearance-none flex-shrink-0 relative transition-colors;
   }

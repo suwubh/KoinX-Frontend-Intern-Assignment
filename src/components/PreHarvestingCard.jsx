@@ -8,33 +8,33 @@ export default function PreHarvestingCard() {
 
   if (loading.gains) {
     return (
-      <div className="bg-white dark:bg-[#1a2438] rounded-2xl p-6 flex items-center justify-center min-h-[220px]">
-        <Spinner />
+      <div className="bg-[#171f2f] rounded-2xl p-6 flex items-center justify-center min-h-[220px] min-w-0">
+        <Spinner light />
       </div>
     )
   }
 
   if (error.gains) {
     return (
-      <div className="bg-white dark:bg-[#1a2438] rounded-2xl p-6 flex items-center justify-center min-h-[220px]">
-        <p className="text-red-500 text-sm">Failed to load capital gains data.</p>
+      <div className="bg-[#171f2f] rounded-2xl p-6 flex items-center justify-center min-h-[220px] min-w-0">
+        <p className="text-white/80 text-sm">Failed to load capital gains data.</p>
       </div>
     )
   }
 
-  const { stcgNet, ltcgNet, total } = getNetGains(capitalGains)
+  const { total } = getNetGains(capitalGains)
 
   return (
-    <div className="bg-white dark:bg-[#1a2438] rounded-2xl p-6 shadow-sm">
-      <h2 className="text-base font-bold text-gray-900 dark:text-white mb-5">Pre Harvesting</h2>
+    <div className="bg-[#171f2f] rounded-2xl p-5 sm:p-6 shadow-sm min-w-0 overflow-hidden">
+      <h2 className="text-base font-bold text-white mb-5">Pre Harvesting</h2>
 
-      <GainsTable gains={capitalGains} />
+      <GainsTable gains={capitalGains} dark />
 
-      <div className="mt-5 pt-4 border-t border-gray-100 dark:border-gray-700 flex items-center justify-between">
-        <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
+      <div className="mt-5 pt-4 border-t border-white/20 flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+        <span className="text-sm font-semibold text-white">
           Realised Capital Gains:
         </span>
-        <span className="text-2xl font-bold text-gray-900 dark:text-white">
+        <span className="text-xl sm:text-2xl font-bold text-white text-right">
           {fmtTotal(total)}
         </span>
       </div>
@@ -52,32 +52,75 @@ export function GainsTable({ gains, dark = false }) {
 
   return (
     <div>
-      {/* column headers */}
-      <div className="grid grid-cols-3 mb-2">
-        <div />
-        <div className={`text-xs font-medium text-right ${textClass}`}>Short-term</div>
-        <div className={`text-xs font-medium text-right ${textClass}`}>Long-term</div>
+      <div className="space-y-4 sm:hidden">
+        <MobileGainGroup
+          title="Short-term"
+          labelClass={labelClass}
+          textClass={textClass}
+          valueClass={valueClass}
+          netClass={netClass}
+          profits={gains.stcg.profits}
+          losses={gains.stcg.losses}
+          net={stcgNet}
+        />
+        <MobileGainGroup
+          title="Long-term"
+          labelClass={labelClass}
+          textClass={textClass}
+          valueClass={valueClass}
+          netClass={netClass}
+          profits={gains.ltcg.profits}
+          losses={gains.ltcg.losses}
+          net={ltcgNet}
+        />
       </div>
 
-      {/* Profits row */}
-      <div className="grid grid-cols-3 py-2">
-        <span className={`text-sm ${labelClass}`}>Profits</span>
-        <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(gains.stcg.profits)}</span>
-        <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(gains.ltcg.profits)}</span>
-      </div>
+      <div className="hidden sm:block">
+        <div className="grid grid-cols-3 mb-2">
+          <div />
+          <div className={`text-xs font-medium text-right ${textClass}`}>Short-term</div>
+          <div className={`text-xs font-medium text-right ${textClass}`}>Long-term</div>
+        </div>
 
-      {/* Losses row */}
-      <div className="grid grid-cols-3 py-2">
-        <span className={`text-sm ${labelClass}`}>Losses</span>
-        <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(-gains.stcg.losses)}</span>
-        <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(-gains.ltcg.losses)}</span>
-      </div>
+        <div className="grid grid-cols-3 py-2">
+          <span className={`text-sm ${labelClass}`}>Profits</span>
+          <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(gains.stcg.profits)}</span>
+          <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(gains.ltcg.profits)}</span>
+        </div>
 
-      {/* Net Capital Gains row */}
-      <div className="grid grid-cols-3 py-2">
-        <span className={`text-sm ${labelClass}`}>Net Capital Gains</span>
-        <span className={`text-sm text-right ${netClass}`}>{fmtCardValue(stcgNet)}</span>
-        <span className={`text-sm text-right ${netClass}`}>{fmtCardValue(ltcgNet)}</span>
+        <div className="grid grid-cols-3 py-2">
+          <span className={`text-sm ${labelClass}`}>Losses</span>
+          <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(-gains.stcg.losses)}</span>
+          <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(-gains.ltcg.losses)}</span>
+        </div>
+
+        <div className="grid grid-cols-3 py-2">
+          <span className={`text-sm ${labelClass}`}>Net Capital Gains</span>
+          <span className={`text-sm text-right ${netClass}`}>{fmtCardValue(stcgNet)}</span>
+          <span className={`text-sm text-right ${netClass}`}>{fmtCardValue(ltcgNet)}</span>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function MobileGainGroup({ title, labelClass, textClass, valueClass, netClass, profits, losses, net }) {
+  return (
+    <div>
+      <div className={`text-xs font-medium ${textClass}`}>{title}</div>
+      <div className="mt-2 space-y-2">
+        <div className="flex items-center justify-between gap-3">
+          <span className={`text-sm ${labelClass}`}>Profits</span>
+          <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(profits)}</span>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <span className={`text-sm ${labelClass}`}>Losses</span>
+          <span className={`text-sm text-right ${valueClass}`}>{fmtCardValue(-losses)}</span>
+        </div>
+        <div className="flex items-center justify-between gap-3">
+          <span className={`text-sm ${labelClass}`}>Net Capital Gains</span>
+          <span className={`text-sm text-right ${netClass}`}>{fmtCardValue(net)}</span>
+        </div>
       </div>
     </div>
   )
